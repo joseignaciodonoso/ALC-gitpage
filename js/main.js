@@ -1049,9 +1049,9 @@ app.slider = {
       html = "";
       html += "<div class='slider-navigation'>";
       html += "<div class='slider-nav slider-nav-left'><span class='fa fa-angle-left'></span></div>";
+      html += "<div class='slider-bullets'><div class='slider-bullets-limit'></div></div>";
       html += "<div class='slider-nav slider-nav-right'><span class='fa fa-angle-right'></span></div>";
       html += "</div>";
-      html += "<div class='slider-bullets'><div class='slider-bullets-limit'></div></div>";
       slider.append(html);
       return slider.find(".slide").each(function() {
         return slider.find(".slider-bullets .slider-bullets-limit").append("<div class='slider-bullet'></div>");
@@ -1132,6 +1132,31 @@ app.slider = {
   }
 };
 
+app["switch"] = {
+  init: function() {
+    var slider_empresas, slider_persona, toggleSwitch, toggleText;
+    document.addEventListener('DOMContentLoaded', function() {});
+    toggleSwitch = document.querySelector('#toggle-switch');
+    toggleText = document.querySelectorAll('.toggle-text');
+    slider_persona = document.querySelector('.section__slider');
+    slider_empresas = document.querySelector('.section__slider--empresas');
+    toggleText[0].style.visibility = 'visible';
+    return toggleSwitch.addEventListener('change', function() {
+      if (toggleSwitch.checked) {
+        toggleText[0].style.color = 'white';
+        toggleText[1].style.color = 'rgb(213, 213, 213)';
+        slider_persona.style.display = 'block';
+        return slider_empresas.style.display = 'none';
+      } else {
+        toggleText[0].style.color = "rgb(213, 213, 213)";
+        toggleText[1].style.color = "white";
+        slider_persona.style.display = 'none';
+        return slider_empresas.style.display = 'block';
+      }
+    });
+  }
+};
+
 app.tabs = {
   init: function() {
     return $(".tabs").each(function() {
@@ -1156,6 +1181,45 @@ app.tabs = {
     if (app.scroll) {
       return app.scroll.dscroll();
     }
+  }
+};
+
+app.testimonies = {
+  init: function() {
+    app.testimonies.autoplay();
+    $(".section--services--2").find(".section__avatar").click(function() {
+      var container, index;
+      index = $(this).index();
+      container = $(this).closest(".section--testimonies");
+      app.testimonies.goto(container, index);
+      return app.testimonies.autoplay();
+    });
+    return {
+      autoplayInterval: void 0
+    };
+  },
+  autoplay: function() {
+    clearTimeout(app.testimonies.autoplayInterval);
+    return app.testimonies.autoplayInterval = setInterval(function() {
+      return $(".section--testimonies").each(function() {
+        var container;
+        container = $(this);
+        return app.testimonies.next(container);
+      });
+    }, 10000);
+  },
+  next: function(container) {
+    var current, next;
+    current = container.find(".section__avatar.current").index();
+    next = current + 1;
+    if (next >= container.find(".section__avatar").length) {
+      next = 0;
+    }
+    return app.testimonies.goto(container, next);
+  },
+  goto: function(container, index) {
+    container.find(".section__avatar").removeClass("current").eq(index).addClass("current");
+    return container.find(".section__testimony").removeClass("in").addClass("out").eq(index).removeClass("out").addClass("in");
   }
 };
 
